@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ADA Price Prediction dApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #38bdf8;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: #cbd5f5;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 10px;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+
+    input::placeholder {
+      color: #64748b;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      color: #020617;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+    }
+
+    .secondary {
+      background: linear-gradient(135deg, #22c55e, #86efac);
+    }
+
+    .danger {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+    }
+
+    .log {
+      margin-top: 16px;
+      padding: 12px;
+      background: #020617;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      min-height: 48px;
+      word-break: break-word;
+    }
+
+    .divider {
+      height: 1px;
+      background: #1e293b;
+      margin: 16px 0;
+    }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <h1>📈 ADA Price Prediction</h1>
+    <div class="subtitle">
+      Stake ADA • Predict • Earn Rewards
+    </div>
+
+    <!-- CONNECT -->
+    <div class="section">
+      <button id="connect">🔌 Connect Lace Wallet</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SUBMIT PREDICTION -->
+    <div class="section">
+      <h2>Submit Prediction</h2>
+
+      <label>Target Epoch</label>
+      <input id="epoch" type="number" placeholder="e.g. 520" />
+
+      <label>Predicted ADA Price</label>
+      <input id="price" type="number" placeholder="e.g. 750000 (lovelace)" />
+
+      <label>Stake (ADA)</label>
+      <input id="stake" type="number" placeholder="e.g. 50" />
+
+      <label>Oracle Address</label>
+      <input
+        id="oracle"
+        type="text"
+        placeholder="addr_test1..."
+      />
+
+      <button id="submit">🚀 Submit Prediction</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ORACLE RESOLUTION -->
+    <div class="section">
+      <h2>Oracle</h2>
+      <button id="resolve" class="secondary">
+        🧠 Resolve Prediction
+      </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CLAIM -->
+    <div class="section">
+      <h2>Rewards</h2>
+      <button id="claim" class="danger">
+        💰 Claim Reward
+      </button>
+    </div>
+
+    <div id="log" class="log">
+      Status messages will appear here...
+    </div>
+
+    <footer>
+      Cardano • Plutus V2 • Lucid
+    </footer>
+  </div>
+
+  <!-- APP LOGIC -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
