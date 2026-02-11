@@ -291,37 +291,6 @@
       margin-left: 4px;
     }
 
-    /* ===== PREDICTION TYPE SELECTOR ===== */
-    .type-selector {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding: 8px;
-      background: rgba(2, 6, 23, 0.4);
-      border-radius: 40px;
-    }
-
-    .type-btn {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      border-radius: 32px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .type-btn.active {
-      background: var(--accent-gradient);
-      color: white;
-    }
-
     /* ===== BUTTONS ===== */
     .btn {
       padding: 14px 24px;
@@ -366,6 +335,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      color: white;
     }
 
     /* ===== PORTFOLIO GRID ===== */
@@ -434,18 +413,6 @@
       background: rgba(255, 215, 0, 0.2);
       color: #FFD700;
       border: 1px solid rgba(255, 215, 0, 0.3);
-    }
-
-    .badge-silver {
-      background: rgba(192, 192, 192, 0.2);
-      color: #C0C0C0;
-      border: 1px solid rgba(192, 192, 192, 0.3);
-    }
-
-    .badge-bronze {
-      background: rgba(205, 127, 50, 0.2);
-      color: #CD7F32;
-      border: 1px solid rgba(205, 127, 50, 0.3);
     }
 
     /* ===== REFERRAL SECTION ===== */
@@ -522,18 +489,6 @@
       display: none !important;
     }
 
-    .text-success {
-      color: var(--success);
-    }
-
-    .text-warning {
-      color: var(--warning);
-    }
-
-    .text-error {
-      color: var(--error);
-    }
-
     .mt-4 {
       margin-top: 16px;
     }
@@ -587,6 +542,10 @@
         grid-template-columns: 1fr;
       }
 
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
       .form-grid {
         grid-template-columns: 1fr;
       }
@@ -624,12 +583,9 @@
         <a href="#" class="nav-link active">
           <i class="fas fa-home"></i> Dashboard
         </a>
-        <a href="#" class="nav-link">
-          <i class="fas fa-history"></i> History
-        </a>
         <div id="walletBadge" class="wallet-badge">
           <i class="fas fa-wallet"></i>
-          <span>Connect Wallet</span>
+          <span>Not Connected</span>
         </div>
       </div>
     </nav>
@@ -717,7 +673,7 @@
             <label class="form-label">Stake (ADA)</label>
             <div class="input-wrapper">
               <i class="fas fa-lock input-icon"></i>
-              <input id="stake" type="number" class="form-input" placeholder="Min 10 ADA" min="10" step="1">
+              <input id="stake" type="number" class="form-input" placeholder="Min 10 ADA" min="10" step="1" value="10">
             </div>
             <div class="input-hint">Minimum 10 ADA</div>
           </div>
@@ -737,19 +693,20 @@
             <label class="form-label">Oracle Address</label>
             <div class="input-wrapper">
               <i class="fas fa-user-secret input-icon"></i>
-              <input id="oracle" type="text" class="form-input" placeholder="addr_test1...">
+              <input id="oracle" type="text" class="form-input" placeholder="addr_test1..." 
+                     value="addr_test1qzx9hu8j4ah3auytk0mwcupd69hpc52t0cw39a65ndrah86djs784u92a3m5w475w3w35tyd6v3qumkze80j8a6h5tuqq5xe8y">
             </div>
             <div class="input-hint">Testnet oracle address</div>
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Buttons - CRITICAL: IDs must match app.js -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
           <button id="submit" class="btn btn-primary">
-            <i class="fas fa-paper-plane"></i> Submit
+            <i class="fas fa-paper-plane"></i> Submit Prediction
           </button>
           <button id="fetchCurrent" class="btn btn-secondary">
-            <i class="fas fa-sync-alt"></i> Update
+            <i class="fas fa-sync-alt"></i> Fetch Epoch
           </button>
         </div>
       </div>
@@ -787,7 +744,7 @@
           <div class="mt-4">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
               <span style="color: var(--text-secondary); font-weight: 500;">Your Predictions</span>
-              <span style="color: var(--accent); cursor: pointer; font-size: 0.85rem;" onclick="window.app.checkMyPredictions()">
+              <span style="color: var(--accent); cursor: pointer; font-size: 0.85rem;" onclick="window.app?.checkMyPredictions()">
                 View All <i class="fas fa-arrow-right"></i>
               </span>
             </div>
@@ -797,14 +754,14 @@
           </div>
         </div>
 
-        <!-- Disconnected State -->
+        <!-- Disconnected State - CRITICAL: Button ID must be "connect" -->
         <div id="disconnectedContent">
           <div style="text-align: center; padding: 32px 16px;">
             <i class="fas fa-wallet" style="font-size: 3rem; color: #38bdf8; margin-bottom: 16px;"></i>
             <h3 style="margin-bottom: 8px; color: white;">Connect Your Wallet</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 24px;">Connect Lace wallet to start predicting</p>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Connect Lace wallet to start predicting and earning rewards</p>
             <button id="connect" class="btn btn-primary" style="display: inline-flex; width: auto; padding: 12px 32px;">
-              <i class="fas fa-plug"></i> Connect Lace
+              <i class="fas fa-plug"></i> Connect Lace Wallet
             </button>
           </div>
         </div>
@@ -847,11 +804,11 @@
           Resolve predictions after target epoch ends
         </p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <button id="resolve" class="btn" style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white;">
+          <button id="resolve" class="btn btn-success">
             <i class="fas fa-check-circle"></i> Resolve
           </button>
           <button id="checkUnresolved" class="btn btn-secondary">
-            <i class="fas fa-search"></i> Check
+            <i class="fas fa-search"></i> Check Unresolved
           </button>
         </div>
       </div>
@@ -868,11 +825,11 @@
           Claim your staked ADA from resolved predictions
         </p>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <button id="claim" class="btn" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white;">
-            <i class="fas fa-gift"></i> Claim
+          <button id="claim" class="btn btn-warning">
+            <i class="fas fa-gift"></i> Claim Reward
           </button>
           <button id="checkPredictions" class="btn btn-secondary">
-            <i class="fas fa-wallet"></i> Check
+            <i class="fas fa-wallet"></i> Check My Predictions
           </button>
         </div>
       </div>
@@ -891,7 +848,7 @@
         <div style="display: flex; gap: 12px;">
           <input id="referralLink" type="text" readonly value="Connect wallet to generate link" 
                  style="background: #0f172a; border: 1px solid #1e293b; padding: 12px 20px; border-radius: 40px; color: white; width: 320px; font-size: 0.9rem;">
-          <button onclick="window.app.copyReferralLink()" class="btn btn-primary" style="padding: 12px 24px;">
+          <button onclick="window.app?.copyReferralLink()" class="btn btn-primary" style="padding: 12px 24px;">
             <i class="fas fa-copy"></i> Copy
           </button>
         </div>
@@ -910,12 +867,45 @@
         </button>
       </div>
       <div id="log" class="log-container">
-        <!-- Log entries will be added here -->
+        <div class="log-entry">
+          <span class="log-timestamp">[00:00:00]</span>
+          <span style="color: #93c5fd;">ℹ️ Welcome to Cardano Predict dApp!</span>
+        </div>
+        <div class="log-entry">
+          <span class="log-timestamp">[00:00:00]</span>
+          <span style="color: #93c5fd;">ℹ️ Connect your Lace wallet to start</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Script - Make sure this path is correct -->
   <script type="module" src="app.js"></script>
+  
+  <!-- Fallback inline script if module fails -->
+  <script>
+    // Ensure window.app exists even if module hasn't loaded yet
+    window.app = window.app || {};
+    
+    // Debug: Check if elements exist
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded - checking for connect button');
+      const connectBtn = document.getElementById('connect');
+      console.log('Connect button found:', connectBtn);
+      
+      if (!connectBtn) {
+        console.error('CRITICAL: Connect button with ID "connect" not found!');
+      }
+      
+      // Log all button IDs for debugging
+      const buttons = ['connect', 'submit', 'resolve', 'claim', 'fetchCurrent', 
+                      'checkPredictions', 'checkUnresolved', 'refreshData', 'clearLog'];
+      
+      buttons.forEach(id => {
+        const el = document.getElementById(id);
+        console.log(`Button #${id}: ${el ? '✓ Found' : '✗ MISSING'}`);
+      });
+    });
+  </script>
 </body>
 </html>
