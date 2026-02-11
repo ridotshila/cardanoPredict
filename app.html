@@ -2,492 +2,841 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ADA Price Prediction dApp</title>
+  <title>Cardano Predict • Advanced Prediction Market</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
   <style>
+    /* ===== ADVANCED STYLES ===== */
     * {
       box-sizing: border-box;
-      font-family: "Inter", sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
       margin: 0;
-      background: linear-gradient(135deg, #0f172a, #020617);
-      color: #e5e7eb;
-      min-height: 100vh;
+      background: radial-gradient(circle at 10% 20%, rgba(2, 6, 23, 1) 0%, rgba(15, 23, 42, 1) 100%);
+      color: #fff;
+      padding: 24px;
+    }
+
+    .dashboard {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      padding: 20px;
+      padding: 16px 24px;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      margin-bottom: 32px;
+      position: sticky;
+      top: 16px;
+      z-index: 100;
     }
 
-    .app {
-      width: 100%;
-      max-width: 450px;
-      background: rgba(15, 23, 42, 0.95);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(56, 189, 248, 0.1);
-      backdrop-filter: blur(10px);
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #38bdf8, #8b5cf6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
     }
 
-    .header h1 {
-      font-size: 1.8rem;
-      margin: 0 0 8px 0;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .header .subtitle {
-      font-size: 0.9rem;
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-link {
       color: #94a3b8;
-      margin-bottom: 12px;
-    }
-
-    .wallet-info {
-      background: rgba(2, 6, 23, 0.7);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 20px;
-      font-size: 0.8rem;
-      color: #38bdf8;
-      word-break: break-all;
-      display: none;
-    }
-
-    .section {
-      background: rgba(2, 6, 23, 0.5);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 1px solid rgba(56, 189, 248, 0.1);
-    }
-
-    .section h2 {
-      font-size: 1.1rem;
-      margin: 0 0 16px 0;
-      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .section h2 i {
-      font-size: 0.9rem;
+    .nav-link:hover, .nav-link.active {
+      color: #38bdf8;
     }
 
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      color: #cbd5f5;
-      font-weight: 500;
-    }
-
-    .input-with-icon {
-      position: relative;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 16px;
-      padding-left: 40px;
-      border-radius: 12px;
-      border: 2px solid #1e293b;
-      background: rgba(2, 6, 23, 0.8);
-      color: #e5e7eb;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-    }
-
-    input::placeholder {
-      color: #64748b;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #64748b;
-    }
-
-    .input-hint {
-      font-size: 0.75rem;
-      color: #64748b;
-      margin-top: 4px;
-      margin-left: 4px;
-    }
-
-    .button-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .wallet-badge {
+      background: rgba(56, 189, 248, 0.1);
+      padding: 8px 16px;
+      border-radius: 40px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      color: #38bdf8;
     }
 
-    button:hover {
-      transform: translateY(-2px);
+    /* ===== STATS CARDS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
     }
 
-    button:active {
-      transform: translateY(0);
+    .stat-card {
+      background: rgba(2, 6, 23, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      border-radius: 24px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
     }
 
-    .btn-connect {
-      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      color: white;
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: #38bdf8;
     }
 
-    .btn-connect:hover {
-      box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
-    }
-
-    .btn-submit {
-      background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-      color: white;
-    }
-
-    .btn-submit:hover {
-      box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
-    }
-
-    .btn-resolve {
-      background: linear-gradient(135deg, #22c55e, #86efac);
-      color: white;
-    }
-
-    .btn-resolve:hover {
-      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
-    }
-
-    .btn-claim {
-      background: linear-gradient(135deg, #f97316, #fb923c);
-      color: white;
-    }
-
-    .btn-claim:hover {
-      box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
-    }
-
-    .btn-refresh {
-      background: linear-gradient(135deg, #6366f1, #818cf8);
-      color: white;
-      margin-top: 8px;
-    }
-
-    .btn-refresh:hover {
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-    }
-
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, #1e293b, transparent);
-      margin: 24px 0;
-    }
-
-    .log-section {
-      margin-top: 24px;
-    }
-
-    .log-section h2 {
+    .stat-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 12px;
     }
 
-    #log {
-      background: rgba(2, 6, 23, 0.8);
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 0.85rem;
+    .stat-title {
       color: #94a3b8;
-      min-height: 120px;
-      max-height: 200px;
-      overflow-y: auto;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      line-height: 1.5;
-      border: 1px solid #1e293b;
-      white-space: pre-wrap;
-      word-break: break-word;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .log-entry {
-      margin-bottom: 8px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
-    }
-
-    .log-entry:last-child {
-      margin-bottom: 0;
-      border-bottom: none;
-    }
-
-    .log-timestamp {
-      color: #64748b;
-      font-size: 0.75rem;
-    }
-
-    .log-message {
-      color: #e2e8f0;
-    }
-
-    .log-success {
-      color: #86efac;
-    }
-
-    .log-error {
-      color: #fca5a5;
-    }
-
-    .log-info {
-      color: #93c5fd;
-    }
-
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 0.75rem;
-      color: #64748b;
-      padding-top: 20px;
-      border-top: 1px solid rgba(56, 189, 248, 0.1);
-    }
-
-    .footer-links {
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(56, 189, 248, 0.1);
+      border-radius: 12px;
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 20px;
-      margin-top: 8px;
-    }
-
-    .footer a {
       color: #38bdf8;
-      text-decoration: none;
     }
 
-    .footer a:hover {
-      text-decoration: underline;
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
 
-    .status-indicator {
-      display: inline-block;
-      width: 8px;
+    .stat-change {
+      font-size: 0.8rem;
+      color: #86efac;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== MAIN CONTENT LAYOUT ===== */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.1);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-title i {
+      color: #38bdf8;
+    }
+
+    /* ===== PREDICTION FORM ===== */
+    .prediction-type-selector {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding: 8px;
+      background: rgba(2, 6, 23, 0.4);
+      border-radius: 40px;
+    }
+
+    .type-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      border-radius: 32px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .type-btn.active {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: white;
+    }
+
+    /* ===== MARKET CARDS ===== */
+    .markets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .market-card {
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+    }
+
+    .market-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .market-category {
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      color: #38bdf8;
+    }
+
+    .market-time {
+      color: #94a3b8;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .market-question {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .outcome-bar {
+      display: flex;
       height: 8px;
-      border-radius: 50%;
-      margin-right: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      overflow: hidden;
     }
 
-    .status-connected {
-      background-color: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
+    .outcome-fill {
+      background: linear-gradient(90deg, #38bdf8, #8b5cf6);
     }
 
-    .status-disconnected {
-      background-color: #64748b;
+    .outcome-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
     }
 
-    /* Loading animation */
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 1s ease-in-out infinite;
+    .outcome-yes {
+      color: #86efac;
+      font-weight: 600;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .outcome-no {
+      color: #f87171;
+      font-weight: 600;
     }
 
-    /* Responsive */
-    @media (max-width: 480px) {
-      .app {
-        padding: 20px;
+    .btn-predict {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: white;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn-predict:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ===== PORTFOLIO SECTION ===== */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .portfolio-item {
+      background: rgba(56, 189, 248, 0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .portfolio-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #38bdf8;
+      margin: 8px 0;
+    }
+
+    /* ===== LEADERBOARD ===== */
+    .leaderboard {
+      margin-top: 16px;
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+    }
+
+    .leaderboard-rank {
+      width: 30px;
+      height: 30px;
+      background: rgba(56, 189, 248, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .leaderboard-address {
+      flex: 1;
+      font-family: monospace;
+    }
+
+    .leaderboard-score {
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* ===== REPUTATION BADGES ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    .badge-gold {
+      background: rgba(255, 215, 0, 0.2);
+      color: #FFD700;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .badge-silver {
+      background: rgba(192, 192, 192, 0.2);
+      color: #C0C0C0;
+      border: 1px solid rgba(192, 192, 192, 0.3);
+    }
+
+    .badge-bronze {
+      background: rgba(205, 127, 50, 0.2);
+      color: #CD7F32;
+      border: 1px solid rgba(205, 127, 50, 0.3);
+    }
+
+    /* ===== REFERRAL SECTION ===== */
+    .referral-box {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    /* ===== LOADING ANIMATIONS ===== */
+    .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #2d3a4f 50%, #1e293b 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        gap: 16px;
       }
       
-      .section {
-        padding: 16px;
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
       }
       
-      button {
-        padding: 12px;
+      .stats-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="app">
-    <div class="header">
-      <h1><i class="fas fa-chart-line"></i> ADA Predictor</h1>
-      <div class="subtitle">
-        Stake • Predict • Earn • Built on Cardano
-      </div>
-      <div id="walletInfo" class="wallet-info">
-        <span class="status-indicator status-disconnected"></span>
-        Not connected
-      </div>
-    </div>
-
-    <!-- CONNECT WALLET -->
-    <div class="section">
-      <h2><i class="fas fa-wallet"></i> Wallet Connection</h2>
-      <button id="connect" class="btn-connect">
-        <i class="fas fa-plug"></i> Connect Lace Wallet
-      </button>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- SUBMIT PREDICTION -->
-    <div class="section">
-      <h2><i class="fas fa-bullseye"></i> Submit Prediction</h2>
-      
-      <div class="input-group">
-        <label>Target Epoch</label>
-        <div class="input-with-icon">
-          <i class="fas fa-calendar-alt input-icon"></i>
-          <input id="epoch" type="number" placeholder="e.g., 520" min="0">
+  <div class="dashboard">
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="navbar">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-chart-line"></i>
         </div>
-        <div class="input-hint">Current epoch will be fetched automatically</div>
+        <span class="logo-text">CardanoPredict</span>
+        <span class="badge" style="background: rgba(56,189,248,0.2); color: #38bdf8;">
+          <i class="fas fa-flask"></i> Preprod Testnet
+        </span>
       </div>
       
-      <div class="input-group">
-        <label>Predicted ADA Price (in lovelace)</label>
-        <div class="input-with-icon">
-          <i class="fas fa-coins input-icon"></i>
-          <input id="price" type="number" placeholder="e.g., 750000" min="0">
+      <div class="nav-links">
+        <a href="#" class="nav-link active">
+          <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="#" class="nav-link">
+          <i class="fas fa-chart-bar"></i> Markets
+        </a>
+        <a href="#" class="nav-link">
+          <i class="fas fa-trophy"></i> Leaderboard
+        </a>
+        <a href="#" class="nav-link">
+          <i class="fas fa-history"></i> History
+        </a>
+        <div id="walletBadge" class="wallet-badge">
+          <i class="fas fa-wallet"></i>
+          <span>Connect Wallet</span>
         </div>
-        <div class="input-hint">1 ADA = 1,000,000 lovelace</div>
       </div>
-      
-      <div class="input-group">
-        <label>Stake Amount (ADA)</label>
-        <div class="input-with-icon">
-          <i class="fas fa-lock input-icon"></i>
-          <input id="stake" type="number" placeholder="e.g., 50" min="1" step="1">
+    </nav>
+
+    <!-- ===== GLOBAL STATS ===== -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Total Value Locked</span>
+          <div class="stat-icon">
+            <i class="fas fa-lock"></i>
+          </div>
         </div>
-        <div class="input-hint">Minimum 10 ADA required</div>
-      </div>
-      
-      <div class="input-group">
-        <label>Oracle Address</label>
-        <div class="input-with-icon">
-          <i class="fas fa-user-secret input-icon"></i>
-          <input id="oracle" type="text" placeholder="addr_test1...">
+        <div class="stat-value" id="totalTVL">₳ 0</div>
+        <div class="stat-change">
+          <i class="fas fa-arrow-up"></i> +12.3% this week
         </div>
-        <div class="input-hint">Testnet address of the oracle</div>
       </div>
       
-      <div class="button-group">
-        <button id="submit" class="btn-submit">
-          <i class="fas fa-paper-plane"></i> Submit Prediction
-        </button>
-        <button id="fetchCurrent" class="btn-refresh">
-          <i class="fas fa-sync-alt"></i> Fetch Current Epoch & Price
-        </button>
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Active Predictions</span>
+          <div class="stat-icon">
+            <i class="fas fa-bullseye"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="activePredictions">0</div>
+        <div class="stat-change">24 pending resolution</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Total Staked</span>
+          <div class="stat-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="totalStaked">₳ 0</div>
+        <div class="stat-change">Across 342 users</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Avg Accuracy</span>
+          <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+        <div class="stat-value" id="avgAccuracy">68.4%</div>
+        <div class="stat-change">Top predictor: 92%</div>
       </div>
     </div>
 
-    <div class="divider"></div>
+    <!-- ===== MAIN CONTENT GRID ===== -->
+    <div class="main-grid">
+      <!-- LEFT COLUMN: Prediction Form -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-pen-to-square"></i>
+            Create New Prediction
+          </div>
+          <span style="color: #94a3b8; font-size: 0.8rem;">
+            <i class="fas fa-info-circle"></i> Stake & earn
+          </span>
+        </div>
 
-    <!-- ORACLE ACTIONS -->
-    <div class="section">
-      <h2><i class="fas fa-eye"></i> Oracle Actions</h2>
-      <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">
-        For oracle address only. Resolves predictions after epoch ends.
-      </p>
-      <div class="button-group">
-        <button id="resolve" class="btn-resolve">
-          <i class="fas fa-check-circle"></i> Resolve Prediction
-        </button>
-        <button id="checkPredictions" class="btn-refresh">
-          <i class="fas fa-search"></i> Check Unresolved Predictions
-        </button>
+        <!-- Prediction Type Selector -->
+        <div class="prediction-type-selector">
+          <button id="typePrice" class="type-btn active">
+            <i class="fas fa-coins"></i> Price
+          </button>
+          <button id="typeVolume" class="type-btn">
+            <i class="fas fa-chart-simple"></i> Volume
+          </button>
+          <button id="typeTVL" class="type-btn">
+            <i class="fas fa-vault"></i> TVL
+          </button>
+          <button id="typeStaking" class="type-btn">
+            <i class="fas fa-lock"></i> Staking
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+              Target Epoch
+            </label>
+            <div style="position: relative;">
+              <i class="fas fa-calendar" style="position: absolute; left: 12px; top: 14px; color: #64748b;"></i>
+              <input id="epoch" type="number" placeholder="e.g., 520" 
+                     style="width: 100%; padding: 12px; padding-left: 40px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: white;">
+            </div>
+          </div>
+          <div>
+            <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+              Confidence Level
+            </label>
+            <div style="position: relative;">
+              <i class="fas fa-percent" style="position: absolute; left: 12px; top: 14px; color: #64748b;"></i>
+              <input id="confidence" type="number" placeholder="70-100%" min="0" max="100" value="80"
+                     style="width: 100%; padding: 12px; padding-left: 40px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: white;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+              Predicted Price (lovelace)
+            </label>
+            <div style="position: relative;">
+              <i class="fas fa-coins" style="position: absolute; left: 12px; top: 14px; color: #64748b;"></i>
+              <input id="price" type="number" placeholder="e.g., 750000" 
+                     style="width: 100%; padding: 12px; padding-left: 40px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: white;">
+            </div>
+          </div>
+          <div>
+            <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+              Stake (ADA)
+            </label>
+            <div style="position: relative;">
+              <i class="fas fa-lock" style="position: absolute; left: 12px; top: 14px; color: #64748b;"></i>
+              <input id="stake" type="number" placeholder="Min 10" 
+                     style="width: 100%; padding: 12px; padding-left: 40px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: white;">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+            Oracle Address
+          </label>
+          <div style="position: relative;">
+            <i class="fas fa-user-secret" style="position: absolute; left: 12px; top: 14px; color: #64748b;"></i>
+            <input id="oracle" type="text" placeholder="addr_test1..." 
+                   style="width: 100%; padding: 12px; padding-left: 40px; background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; color: white;">
+          </div>
+        </div>
+
+        <!-- Advanced Options -->
+        <details style="margin-bottom: 20px;">
+          <summary style="color: #38bdf8; cursor: pointer; margin-bottom: 12px;">
+            <i class="fas fa-cog"></i> Advanced Options
+          </summary>
+          <div style="padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px;">
+            <div style="margin-bottom: 12px;">
+              <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="enableReferral"> 
+                <span>Enable referral (5% bonus)</span>
+              </label>
+            </div>
+            <div>
+              <label style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 6px; display: block;">
+                Referrer Address (optional)
+              </label>
+              <input id="referrer" type="text" placeholder="addr_test1..." 
+                     style="width: 100%; padding: 10px; background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; color: white;">
+            </div>
+          </div>
+        </details>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <button id="submit" class="btn-predict">
+            <i class="fas fa-paper-plane"></i> Submit Prediction
+          </button>
+          <button id="fetchCurrent" style="background: #1e293b; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-sync-alt"></i> Update
+          </button>
+        </div>
+
+        <!-- Live Preview -->
+        <div style="margin-top: 20px; padding: 16px; background: rgba(56,189,248,0.05); border-radius: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="color: #94a3b8;">Potential Return:</span>
+            <span style="font-weight: 700; color: #86efac;" id="potentialReturn">₳ 0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #94a3b8;">Success Probability:</span>
+            <span style="font-weight: 700;" id="successProbability">80%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: User Portfolio & Reputation -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-user-circle"></i>
+            Your Portfolio
+          </div>
+          <div id="reputationBadge" style="display: none;">
+            <span class="badge badge-gold">
+              <i class="fas fa-crown"></i> Legend
+            </span>
+          </div>
+        </div>
+
+        <div id="connectedContent" style="display: none;">
+          <div class="portfolio-grid">
+            <div class="portfolio-item">
+              <i class="fas fa-coins" style="color: #38bdf8;"></i>
+              <div class="portfolio-value" id="userStaked">₳ 0</div>
+              <div style="color: #94a3b8; font-size: 0.8rem;">Total Staked</div>
+            </div>
+            <div class="portfolio-item">
+              <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+              <div class="portfolio-value" id="userWins">0</div>
+              <div style="color: #94a3b8; font-size: 0.8rem;">Predictions Won</div>
+            </div>
+            <div class="portfolio-item">
+              <i class="fas fa-star" style="color: #a78bfa;"></i>
+              <div class="portfolio-value" id="userAccuracy">0%</div>
+              <div style="color: #94a3b8; font-size: 0.8rem;">Accuracy</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: #94a3b8;">Your Predictions</span>
+              <span style="color: #38bdf8; cursor: pointer;" onclick="window.app.checkMyPredictions()">
+                View All <i class="fas fa-arrow-right"></i>
+              </span>
+            </div>
+            <div id="predictionsList" style="max-height: 200px; overflow-y: auto;">
+              <!-- Dynamic content -->
+            </div>
+          </div>
+
+          <!-- Achievements -->
+          <div style="margin-top: 20px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="achievements">
+              <!-- Dynamic badges -->
+            </div>
+          </div>
+        </div>
+
+        <div id="disconnectedContent">
+          <div style="text-align: center; padding: 32px 16px;">
+            <i class="fas fa-wallet" style="font-size: 3rem; color: #38bdf8; margin-bottom: 16px;"></i>
+            <h3 style="margin-bottom: 8px;">Connect Your Wallet</h3>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Connect Lace wallet to start predicting and earning rewards</p>
+            <button id="connect" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer;">
+              <i class="fas fa-plug"></i> Connect Lace Wallet
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- USER ACTIONS -->
-    <div class="section">
-      <h2><i class="fas fa-trophy"></i> Rewards & Claims</h2>
-      <div class="button-group">
-        <button id="claim" class="btn-claim">
-          <i class="fas fa-gift"></i> Claim Reward
-        </button>
-        <button id="checkRewards" class="btn-refresh">
-          <i class="fas fa-wallet"></i> Check My Predictions
-        </button>
+    <!-- ===== ACTIVE MARKETS ===== -->
+    <div style="margin-bottom: 32px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="display: flex; align-items: center; gap: 12px;">
+          <i class="fas fa-chart-line" style="color: #38bdf8;"></i>
+          Active Prediction Markets
+        </h2>
+        <div style="display: flex; gap: 12px;">
+          <select id="marketFilter" style="background: #1e293b; color: white; border: none; padding: 8px 16px; border-radius: 40px;">
+            <option>All Markets</option>
+            <option>Price Predictions</option>
+            <option>Volume Predictions</option>
+            <option>TVL Predictions</option>
+            <option>Staking Rate</option>
+          </select>
+          <button class="btn-refresh" onclick="window.app.loadMarkets()">
+            <i class="fas fa-rotate"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div id="marketsGrid" class="markets-grid">
+        <!-- Dynamic market cards -->
+        <div class="market-card skeleton" style="height: 200px;"></div>
+        <div class="market-card skeleton" style="height: 200px;"></div>
+        <div class="market-card skeleton" style="height: 200px;"></div>
       </div>
     </div>
 
-    <!-- LOG SECTION -->
-    <div class="log-section">
-      <h2>
-        <i class="fas fa-terminal"></i> Activity Log
-        <button id="clearLog" style="background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer;">
+    <!-- ===== LEADERBOARD & ACTIVITY ===== -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+      <!-- Leaderboard -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-trophy"></i>
+            Top Predictors
+          </div>
+          <span style="color: #94a3b8;">Epoch 500-510</span>
+        </div>
+        
+        <div class="leaderboard" id="leaderboard">
+          <!-- Dynamic leaderboard -->
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fas fa-clock"></i>
+            Recent Activity
+          </div>
+        </div>
+        
+        <div id="recentActivity" style="max-height: 300px; overflow-y: auto;">
+          <!-- Dynamic activity feed -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REFERRAL SECTION ===== -->
+    <div class="referral-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <h3 style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-gift" style="color: #38bdf8;"></i>
+            Refer & Earn
+          </h3>
+          <p style="color: #94a3b8; margin: 0;">Earn 5% of the stake from your referrals' predictions</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <input id="referralLink" type="text" readonly value="Connect wallet to generate link" 
+                 style="background: #0f172a; border: 1px solid #1e293b; padding: 12px 16px; border-radius: 40px; color: white; width: 300px;">
+          <button onclick="window.app.copyReferralLink()" style="background: #38bdf8; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-copy"></i> Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LOG SECTION ===== -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fas fa-terminal"></i>
+          Activity Log
+        </div>
+        <button id="clearLog" style="background: none; border: none; color: #64748b; cursor: pointer;">
           <i class="fas fa-trash-alt"></i> Clear
         </button>
-      </h2>
-      <div id="log"></div>
-    </div>
-
-    <div class="footer">
-      <div>Built with ❤️ for Cardano</div>
-      <div style="font-size: 0.7rem; margin-top: 4px; color: #475569;">
-        Plutus V2 • Lucid • Blockfrost
       </div>
-      <div class="footer-links">
-        <a href="https://docs.cardano.org" target="_blank">Docs</a>
-        <a href="https://testnets.cardano.org" target="_blank">Testnet</a>
-        <a href="https://blockfrost.io" target="_blank">Blockfrost</a>
+      <div id="log" style="background: #0f172a; border-radius: 12px; padding: 16px; min-height: 120px; max-height: 200px; overflow-y: auto; font-family: monospace; color: #94a3b8;">
+        <!-- Log entries will appear here -->
       </div>
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script type="module" src="app.js"></script>
+  <!-- ===== MODALS ===== -->
+  <div id="marketModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: #0f172a; border-radius: 24px; max-width: 500px; width: 90%; padding: 32px;">
+      <!-- Modal content -->
+    </div>
+  </div>
+
+  <script type="module" src="app-enhanced.js"></script>
 </body>
 </html>
